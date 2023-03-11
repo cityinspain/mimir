@@ -49,22 +49,43 @@ mutation Mutation(
 """
 )
 
-
-def get_create_player_mutation(player):
-    params = {
-        "mlb_id": player.get("mlb_id"),
-        "birth_city": player.get("birth_city"),
-        "birth_state_province": player.get("birth_state_province"),
-        "birth_country": player.get("birth_country"),
-        "birth_date": player.get("birth_date"),
-        "mlbId": player.get("mlb_id"),
-        "name": player.get("name"),
-        "firstName": player.get("first_name"),
-        "lastName": player.get("last_name"),
-        "birthDate": player.get("birth_date"),
-        "birthCity": player.get("birth_city"),
-        "birthStateProvince": player.get("birth_state_province"),
-        "birthCountry": player.get("birth_country"),
-        "height": player.get("height"),
-        "weight": player.get("weight"),
+all_existing_ids_query = gql(
+    """
+query {
+    allPlayers {
+        mlbId
     }
+}
+""")
+
+all_players_by_birth_date_query = gql("""
+query AllPlayersByBirthDate($birthDate: Date) {
+  allPlayersByBirthDate(birthDate: $birthDate) {
+        mlbId
+        name
+        firstName
+        lastName
+        
+    }
+}
+""")
+
+update_player_with_fangraphs_info_mutation = gql("""
+mutation UpdatePlayerByMlbId(
+  $mlbId: String!
+  $fangraphsId: String
+  $fangraphsMinorMasterId: String
+  $fangraphsOrgProspectRanking: Int
+  $fangraphsOverallProspectRanking: Int
+) {
+  updatePlayerByMlbId(
+    mlbId: $mlbId
+    fangraphsId: $fangraphsId
+    fangraphsMinorMasterId: $fangraphsMinorMasterId
+    fangraphsOrgProspectRanking: $fangraphsOrgProspectRanking
+    fangraphsOverallProspectRanking: $fangraphsOverallProspectRanking
+  ) {
+    mlbId
+  }
+}
+""")

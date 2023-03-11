@@ -1,5 +1,6 @@
 import tomli
 import pandas as pd
+import unicodedata
 
 with open('config.toml', 'rb') as f:
     CONFIG = tomli.load(f)
@@ -27,3 +28,8 @@ def fix_floated_strint_cols(row):
             row[col] = fix_floated_strint(row[col])
 
     return row
+
+
+def strip_accents(s):
+    return ''.join(c for c in unicodedata.normalize('NFD', s)
+                   if unicodedata.category(c) != 'Mn')
